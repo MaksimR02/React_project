@@ -1,5 +1,13 @@
 import express from "express";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
+
+mongoose
+  .connect(
+    "mongodb+srv://resetnak32:wwwwww@maksim.itlnk45.mongodb.net/?retryWrites=true&w=majority&appName=Maksim"
+  )
+  .then(() => console.log("DB ok"))
+  .catch((err) => console.log("DB error", err));
 
 const app = express();
 
@@ -10,12 +18,15 @@ app.get("/", (req, res) => {
 });
 
 app.post("/auth/login", (req, res) => {
-    console.log(req.body);
+  console.log(req.body);
 
-    const token = jwt.sign({
-        email: req.body.email,
-        fullName: 'Вася Пупкин'
-    },'secret123');
+  const token = jwt.sign(
+    {
+      email: req.body.email,
+      fullName: "Вася Пупкин",
+    },
+    "secret123"
+  );
 
   res.json({
     success: true,
