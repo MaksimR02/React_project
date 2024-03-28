@@ -13,25 +13,8 @@ const app = express();
 
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.send("234 hello world");
-});
-
-app.post("/auth/login", (req, res) => {
-  console.log(req.body);
-
-  const token = jwt.sign(
-    {
-      email: req.body.email,
-      fullName: "Вася Пупкин",
-    },
-    "secret123"
-  );
-
-  res.json({
-    success: true,
-    token,
-  });
+app.post("/auth/register", (req, res) => {
+  
 });
 
 app.listen(4444, (err) => {
