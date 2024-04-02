@@ -1,10 +1,10 @@
 import express from "express";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-import {validationResult} from 'express-validator'
+import { validationResult } from "express-validator";
 
 import { registerValidation } from "./validations/auth.js";
-
+import UserModel from "./models/user.js";
 
 mongoose
   .connect(
@@ -19,11 +19,19 @@ app.use(express.json());
 
 app.post("/auth/register", registerValidation, (req, res) => {
   const errors = validationResult(req);
-  if(!errors.isEmpty()){
+  if (!errors.isEmpty()) {
     return res.status(400).json(errors.array());
   }
+
+  const doc = new UserModel({
+    email: req.body.email,
+    fullName: req.body.fullName,
+    avatarUrl: req.body.avatarUrl,
+    passwordHash: req.body.passwordHash,
+  });
+
   res.json({
-    success: true
+    success: true,
   });
 });
 
