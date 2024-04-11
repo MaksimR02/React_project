@@ -6,6 +6,7 @@ import { validationResult } from "express-validator";
 
 import { registerValidation } from "./validations/auth.js";
 import UserModel from "./models/user.js";
+import checkAuth from "./utils/checkAuth.js";
 
 mongoose
   .connect(
@@ -66,6 +67,7 @@ app.post("/auth/login", async (req, res) => {
 app.post("/auth/register", registerValidation, async (req, res) => {
   try {
     const errors = validationResult(req);
+
     if (!errors.isEmpty()) {
       return res.status(400).json(errors.array());
     }
@@ -107,9 +109,26 @@ app.post("/auth/register", registerValidation, async (req, res) => {
   }
 });
 
+app.get("/auth/me", checkAuth, async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "Пользователь не найден",
+      });
+    }
+
+    const { passwordHash, ...userData } = user._doc;
+
+    res.json(userData);
+  } catch (err) {}
+});
+
 app.listen(4444, (err) => {
   if (err) {
     return console.log(err);
   }
+
   console.log("Server OK");
 });
